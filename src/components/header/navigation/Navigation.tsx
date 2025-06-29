@@ -3,7 +3,7 @@ import React from 'react'
 import NavButton from './NavButton';
 import { usePathname } from 'next/navigation';
 
-// routes is a array of objects
+// routes is a array of objects, we are mapping over it.
 const routes = [
     {
         href: "/",
