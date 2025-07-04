@@ -1,4 +1,5 @@
 import Header from '@/components/header/Header';
+import Providers from '@/lib/tanstackQueryProvider/providers';
 import React from 'react'
 
 type Props = {
@@ -11,7 +12,9 @@ const DashboardLayout = ({ children }: Props) => {
         <>
             <Header />
             <main>
-                {children}
+                <Providers>
+                    {children}
+                </Providers>
             </main>
         </>
     )
