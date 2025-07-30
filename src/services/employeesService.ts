@@ -18,3 +18,11 @@ export const getAllEmployees = async () => {
         address: employees.address
     }).from(employees);
 }
+
+// export const createEmployees = async (data: insertEmployeesSchema) => {
+//   const [newEmployee] = await db.insert(employees).values({
+//     ...data,
+//   }).returning();
+
+//   return newEmployee;
+// };

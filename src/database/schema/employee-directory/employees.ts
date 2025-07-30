@@ -1,5 +1,7 @@
 import { pgTable, varchar, text, date, timestamp, numeric, boolean } from "drizzle-orm/pg-core";
 import { departments } from "./departments";
+import { createInsertSchema } from "drizzle-zod"
+import { z } from "zod";
 
 export const employees = pgTable("employees", {
   employeeId: varchar("employee_id", { length: 36 }).primaryKey(),
@@ -19,4 +21,9 @@ export const employees = pgTable("employees", {
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+export const insertEmployeesSchema = createInsertSchema(employees).omit({
+  createdAt: true,
+  updatedAt: true
 });
