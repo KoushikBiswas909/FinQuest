@@ -26,7 +26,7 @@ export default function Page() {
       </button>
 
       {/* Employee Table */}
-      <EmployeesTablePage refreshKey={refreshKey} />
+      <EmployeesTablePage />
 
       {/* Slide-in Modal */}
       <SlideInModal

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface EmployeeFormInputs {
@@ -36,42 +36,67 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onSubmit, initialValues }) 
       employeeId: "",
       firstName: "",
       lastName: "",
+      email: "",
+      phoneNumber: "",
+      dateOfBirth: "",
+      gender: "Male",
+      hireDate: "",
+      position: "Software Engineer",
+      departmentId: "",
+      supervisorId: "",
+      salary: 1,
+      address: "",
+      activity: "Active"
     },
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      reset(initialValues);
+    }
+  }, [initialValues, reset]);
 
   const handleReset = () => {
     reset();
   };
 
   const submitForm = async (data: EmployeeFormInputs) => {
-    try {
-      const response = await fetch("http://localhost:3000/api/employees", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+  try {
+    const isEdit = !!initialValues;
+    const url = isEdit
+      ? `http://localhost:3000/api/employees/${data.employeeId}`
+      : "http://localhost:3000/api/employees";
+    const method = isEdit ? "PUT" : "POST";
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("Success:", result);
-
-      // call parent onSubmit prop with result or original data
-      if (onSubmit) {
-        onSubmit(data);
-      }
-
-      // reset the form after successful submission
-      reset();
-
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    let payload: any = { ...data };
+    if (isEdit) {
+      delete payload.employeeId;
+      payload = Object.fromEntries(
+        Object.entries(payload).filter(([key, value]) => {
+          return (initialValues as any)?.[key] !== value;
+        })
+      );
     }
-  };
+
+    const response = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const result = await response.json();
+    console.log("Success:", result);
+
+    // Important change:
+    onSubmit?.(result.data); // pass server-created employee data
+    reset();
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+};
+
 
   return (
     <div className="h-full flex flex-col">
